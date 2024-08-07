@@ -1,14 +1,32 @@
 --Top 10 selling Video Games of ALl TIME
-select Name,Platform,Year_of_Release,NA_sales,EU_sales,JP_sales,other_sales,Global_sales from sales order by global_sales desc limit 10;
-        --to find the years of Top 10 selling Video Games of ALl TIME
-With CTE as (select Name,Platform,Year_of_Release,NA_sales,EU_sales,JP_sales,other_sales,Global_sales from sales order by global_sales desc limit 10)
-select Name,Platform,Year_of_Release,NA_sales,EU_sales,JP_sales,other_sales,Global_sales from CTE order by Year_of_Release;
+SELECT Name,
+        Platform,
+        Year_of_Release,NA_sales,
+        EU_sales,
+        JP_sales,
+        other_sales,
+        Global_sales 
+FROM sales
+ORDER BY global_sales DESC LIMIT 10;
 
 
 
 
 --Years that video game critics loved
-select c.Name,c.Platform,c.Year_of_Release,c.Critic_Count,c.Critic_Score,s.global_sales from sales s join critics c on s.Name = c.Name where c.Critic_Score <>''  and c.Year_of_Release<>'N/A' group by(c.Year_of_Release) order by Critic_Score desc limit 10;
+SELECT c.Name,
+        c.Platform,
+        c.Year_of_Release,
+        c.Critic_Count,
+        c.Critic_Score,
+        s.global_sales 
+FROM sales s 
+JOIN critics c 
+ON s.Name = c.Name 
+WHERE c.Critic_Score <>''  
+AND c.Year_of_Release<>'N/A' 
+GROUP BY(c.Year_of_Release) 
+ORDER BY Critic_Score DESC LIMIT 10;
+
 
 
 
@@ -39,8 +57,6 @@ GROUP BY u.Year_of_Release
 HAVING COUNT(u.Name) > 4
 ORDER BY avg_user_score DESC
 LIMIT 10;
-
-
 
 
 
@@ -76,32 +92,6 @@ LIMIT 10;
 
 
 
-
-WITH user_scores AS (
-    SELECT
-        u.Year_of_Release,
-        ROUND(AVG(u.User_Score), 2) AS avg_user_score,
-        COUNT(u.Name) AS num_games
-    FROM user AS u
-    GROUP BY u.Year_of_Release
-    HAVING COUNT(u.Name) > 4
-),
-critic_scores AS (
-    SELECT
-        c.Year_of_Release,
-        ROUND(AVG(c.Critic_Score), 2) AS avg_critic_score,
-        COUNT(c.Name) AS num_games
-    FROM critics AS c
-    GROUP BY c.Year_of_Release
-    HAVING COUNT(c.Name) > 4
-)
-SELECT
-    year, 
-    SUM(games_sold) AS total_games_sold;
-
-
-  
-
 --Sales in the best video game years
 
 WITH user_scores AS (
@@ -130,4 +120,4 @@ JOIN critic_scores cs ON us.Year_of_Release = cs.Year_of_Release
 JOIN sales g ON us.Year_of_Release = g.Year_of_Release
 GROUP BY g.Year_of_Release
 ORDER BY total_games_sold DESC
-Limit 5;
+LIMIT 5;
